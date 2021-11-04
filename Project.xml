@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildster directory="../build" distribution="../Distribution">
+  <project directory="../Project">
+    <dependencies>
+      <dependency>
+        <label>dlfcn</label>
+        <subpath>build</subpath>
+        <remote>
+          <url>https://github.com/PierceLBrooks/dlfcn-win32.git</url>
+          <git_repo>
+            <branch>pierce</branch>
+            <credentials>
+              <username>username</username>
+              <password>password</password>
+            </credentials>
+          </git_repo>
+        </remote>
+        <build>
+          <arguments></arguments>
+          <cmake>
+            <generator>
+              <switch id="BUILDSTER_OS">
+                <case check="Windows">MinGW Makefiles</case>
+                <case check="Linux">Unix Makefiles</case>
+                <case check="Darwin">Unix Makefiles</case>
+                <default><quit></quit></default>
+              </switch>
+            </generator>
+            <source>..</source>
+          </cmake>
+        </build>
+        <exports>
+          <export type="all">
+            <key>DLFCN_LOCATION</key>
+            <value><install></install></value>
+          </export>
+          <export type="headers">
+            <key>DLFCN_INCLUDE_PATH</key>
+            <value><install></install>/include</value>
+          </export>
+          <export type="libraries">
+            <key>DLFCN_LIBRARIES_PATH</key>
+            <value><install></install>/bin</value>
+          </export>
+        </exports>
+        <imports></imports>
+      </dependency>
+      <dependency>
+        <label>yasm</label>
+        <subpath>build</subpath>
+        <remote>
+          <url>https://github.com/PierceLBrooks/yasm.git</url>
+          <git_repo>
+            <branch>pierce</branch>
+            <credentials>
+              <username>username</username>
+              <password>password</password>
+            </credentials>
+          </git_repo>
+        </remote>
+        <build>
+          <arguments>
+            <argument>-DYASM_BUILD_TESTS=OFF</argument>
+            <argument>-DBUILD_SHARED_LIBS=OFF</argument>
+          </arguments>
+          <cmake>
+            <generator>
+              <switch id="BUILDSTER_OS">
+                <case check="Windows">MinGW Makefiles</case>
+                <case check="Linux">Unix Makefiles</case>
+                <case check="Darwin">Unix Makefiles</case>
+                <default><quit></quit></default>
+              </switch>
+            </generator>
+            <source>..</source>
+          </cmake>
+        </build>
+        <exports>
+          <export type="all">
+            <key>YASM_ROOT</key>
+            <value><install></install></value>
+          </export>
+          <export type="headers">
+            <key>YASM_INCLUDE_PATH</key>
+            <value><install></install>/include</value>
+          </export>
+          <export type="libraries">
+            <key>YASM_LIBRARIES_PATH</key>
+            <value><install></install>/bin</value>
+          </export>
+        </exports>
+        <imports>
+          <import>dlfcn</import>
+        </imports>
+      </dependency>
+    </dependencies>
+    <targets>
+      <target type="executable">
+        <label>x264</label>
+        <subpath>cmake_unofficial</subpath>
+        <generator>
+          <switch id="BUILDSTER_OS">
+            <case check="Windows">CodeBlocks - MinGW Makefiles</case>
+            <case check="Linux">CodeBlocks - Unix Makefiles</case>
+            <case check="Darwin">CodeBlocks - Unix Makefiles</case>
+            <default><quit></quit></default>
+          </switch>
+        </generator>
+        <arguments>
+          <argument>-DFORCE_NASM=OFF</argument>
+        </arguments>
+        <definitions></definitions>
+        <links>
+          <if_check id="BUILDSTER_OS" check="Windows">
+            <link>setupapi</link>
+            <link>iphlpapi</link>
+            <link>psapi</link>
+            <link>userenv</link>
+            <link>gdi32</link>
+            <link>crypt32</link>
+            <link>ws2_32</link>
+          </if_check>
+        </links>
+        <imports>
+          <import>dlfcn</import>
+          <import>yasm</import>
+        </imports>
+      </target>
+    </targets>
+  </project>
+</buildster>
